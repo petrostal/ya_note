@@ -25,8 +25,6 @@ class TestRoutes(TestCase):
     def test_pages_availability(self):
         urls = (
             ('notes:home', None),
-            # ('notes:detail', (self.note.slug,)),
-            # ('notes:list', None),
             ('users:login', None),
             ('users:logout', None),
             ('users:signup', None),
@@ -36,3 +34,20 @@ class TestRoutes(TestCase):
                 url = reverse(name, args=args)
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_redirect_for_anonymous(self):
+        urls = (
+            ('notes:detail', (self.note.id, )),
+            ('notes:list', None),
+            ('notes:add', None),
+            ('notes:success', None),
+            ('notes:edit', (self.note.slug, )),
+            ('notes:delete', (self.note.slug, )),
+        )
+        for name, args in urls:
+            url = reverse(name, args=args)
+            login_url = reverse('users:login')
+            with self.subTest(name):
+                response = self.client.get(url)
+                redirect_url = f'{login_url}?next={url}'
+                self.assertRedirects(response, redirect_url)
