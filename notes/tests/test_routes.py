@@ -51,3 +51,21 @@ class TestRoutes(TestCase):
                 response = self.client.get(url)
                 redirect_url = f'{login_url}?next={url}'
                 self.assertRedirects(response, redirect_url)
+
+    def test_availability_for_add_edit_delete(self):
+        users_statuses = (
+            (self.author, HTTPStatus.OK),
+            (self.reader, HTTPStatus.NOT_FOUND),
+        )
+        urls = (
+            ('notes:edit', (self.note.slug, )),
+            ('notes:delete', (self.note.slug, )),
+            ('notes:detail', (self.note.slug, )),
+        )
+        for user, status in users_statuses:
+            self.client.force_login(user)
+            for name, args in urls:
+                with self.subTest(name=f'{name}'):
+                    url = reverse(name, args=args)
+                    response = self.client.get(url)
+                    self.assertEqual(response.status_code, status)
