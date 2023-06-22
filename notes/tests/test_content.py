@@ -1,23 +1,19 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
 
 from notes.models import Note
-
 
 User = get_user_model()
 
 
 class TestContent(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.author = User.objects.create(username='author')
         cls.reader = User.objects.create(username='reader')
         cls.note = Note.objects.create(
-            title='title',
-            text='text',
-            author=cls.author
+            title='title', text='text', author=cls.author
         )
 
     def test_pages_contains_form(self):

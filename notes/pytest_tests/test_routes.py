@@ -1,14 +1,12 @@
 from http import HTTPStatus
+
 import pytest
-
-from pytest_django.asserts import assertRedirects
-
 from django.urls import reverse
+from pytest_django.asserts import assertRedirects
 
 
 @pytest.mark.parametrize(
-    'name',
-    ('notes:home', 'users:login', 'users:logout', 'users:signup')
+    'name', ('notes:home', 'users:login', 'users:logout', 'users:signup')
 )
 def test_pages_availability_for_anonymous_user(client, name):
     url = reverse(name)
@@ -16,10 +14,7 @@ def test_pages_availability_for_anonymous_user(client, name):
     assert response.status_code == HTTPStatus.OK
 
 
-@pytest.mark.parametrize(
-    'name',
-    ('notes:list', 'notes:add', 'notes:success')
-)
+@pytest.mark.parametrize('name', ('notes:list', 'notes:add', 'notes:success'))
 def test_pages_availability_for_auth_user(admin_client, name):
     url = reverse(name)
     response = admin_client.get(url)
@@ -30,7 +25,7 @@ def test_pages_availability_for_auth_user(admin_client, name):
     'parametrized_client, expected_status',
     (
         (pytest.lazy_fixture('admin_client'), HTTPStatus.NOT_FOUND),
-        (pytest.lazy_fixture('author_client'), HTTPStatus.OK)
+        (pytest.lazy_fixture('author_client'), HTTPStatus.OK),
     ),
 )
 @pytest.mark.parametrize(
@@ -38,7 +33,7 @@ def test_pages_availability_for_auth_user(admin_client, name):
     ('notes:detail', 'notes:edit', 'notes:delete'),
 )
 def test_pages_availability_for_different_users(
-        parametrized_client, name, slug_for_args, expected_status
+    parametrized_client, name, slug_for_args, expected_status
 ):
     url = reverse(name, args=slug_for_args)
     response = parametrized_client.get(url)

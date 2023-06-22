@@ -1,25 +1,21 @@
-from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-
 from http import HTTPStatus
 
-from notes.models import Note
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
 
+from notes.models import Note
 
 User = get_user_model()
 
 
 class TestRoutes(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.author = User.objects.create(username='author')
         cls.reader = User.objects.create(username='reader')
         cls.note = Note.objects.create(
-            title='title',
-            text='text',
-            author=cls.author
+            title='title', text='text', author=cls.author
         )
 
     def test_pages_availability(self):
@@ -37,12 +33,12 @@ class TestRoutes(TestCase):
 
     def test_redirect_for_anonymous(self):
         urls = (
-            ('notes:detail', (self.note.slug, )),
+            ('notes:detail', (self.note.slug,)),
             ('notes:list', None),
             ('notes:add', None),
             ('notes:success', None),
-            ('notes:edit', (self.note.slug, )),
-            ('notes:delete', (self.note.slug, )),
+            ('notes:edit', (self.note.slug,)),
+            ('notes:delete', (self.note.slug,)),
         )
         for name, args in urls:
             url = reverse(name, args=args)
@@ -58,9 +54,9 @@ class TestRoutes(TestCase):
             (self.reader, HTTPStatus.NOT_FOUND),
         )
         urls = (
-            ('notes:edit', (self.note.slug, )),
-            ('notes:delete', (self.note.slug, )),
-            ('notes:detail', (self.note.slug, )),
+            ('notes:edit', (self.note.slug,)),
+            ('notes:delete', (self.note.slug,)),
+            ('notes:detail', (self.note.slug,)),
         )
         for user, status in users_statuses:
             self.client.force_login(user)

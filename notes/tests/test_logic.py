@@ -1,17 +1,13 @@
-from django.test import TestCase, Client
+from http import HTTPStatus
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
-
-from notes.models import Note
-
 from pytils.translit import slugify
 
 from notes.forms import WARNING
-
-from django.conf import settings
-
-from http import HTTPStatus
-
+from notes.models import Note
 
 LOGIN_URL = settings.LOGIN_URL
 
@@ -19,7 +15,6 @@ User = get_user_model()
 
 
 class BaseTestClass(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         cls.add_url = reverse('notes:add')
@@ -35,7 +30,6 @@ class BaseTestClass(TestCase):
 
 
 class TestNoteCreation(BaseTestClass):
-
     @classmethod
     def setUpTestData(cls):
         # cls.add_url = reverse('notes:add')
@@ -74,7 +68,6 @@ class TestNoteCreation(BaseTestClass):
 
 
 class TestNoteEditDelete(BaseTestClass):
-
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -93,7 +86,9 @@ class TestNoteEditDelete(BaseTestClass):
     def test_not_unique_slug(self):
         self.form_data['slug'] = self.note.slug
         response = self.author_client.post(self.add_url, self.form_data)
-        self.assertFormError(response, 'form', 'slug', errors=(self.note.slug + WARNING))
+        self.assertFormError(
+            response, 'form', 'slug', errors=(self.note.slug + WARNING)
+        )
         self.assertEqual(Note.objects.count(), 1)
 
     def test_author_can_edit_note(self):

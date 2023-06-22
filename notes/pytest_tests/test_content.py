@@ -1,5 +1,4 @@
 import pytest
-
 from django.urls import reverse
 
 
@@ -8,10 +7,10 @@ from django.urls import reverse
     (
         (pytest.lazy_fixture('author_client'), True),
         (pytest.lazy_fixture('admin_client'), False),
-    )
+    ),
 )
 def test_notes_list_for_different_users(
-        note, parametrized_client, note_in_list
+    note, parametrized_client, note_in_list
 ):
     url = reverse('notes:list')
     response = parametrized_client.get(url)
@@ -23,8 +22,8 @@ def test_notes_list_for_different_users(
     'name, args',
     (
         ('notes:add', None),
-        ('notes:edit', pytest.lazy_fixture('slug_for_args'))
-    )
+        ('notes:edit', pytest.lazy_fixture('slug_for_args')),
+    ),
 )
 def test_pages_contains_form(author_client, name, args):
     url = reverse(name, args=args)
