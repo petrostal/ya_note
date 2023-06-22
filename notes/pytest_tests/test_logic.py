@@ -1,4 +1,3 @@
-# test_logic.py
 from pytest_django.asserts import assertRedirects, assertFormError
 
 from http import HTTPStatus
@@ -121,5 +120,3 @@ def test_other_user_cant_delete_note(admin_client, form_data, slug_for_args):
     response = admin_client.post(url)
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert Note.objects.count() == 1
-
-
